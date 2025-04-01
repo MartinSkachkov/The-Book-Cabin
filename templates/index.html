@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <table class="table table-success table-striped table-hover" border="1">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th colspan="2">Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for book in all_books %}
+        <tr>
+            <td>{{book.id}}</td>
+            <td>{{book.title}}</td>
+            <td>{{book.author}}</td>
+            <td>{{book.price}}</td>
+            <td>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update
+                </button>
+            </td>
+            <td>
+                <a href="/delete/{{book.id}}" class="btn btn-danger"
+                   onclick="return confirm('Are you sure to delete ?')">Delete</a>
+            </td>
+        </tr>
+
+        <!-- Include the update_modal from the separate file -->
+        {% include 'update_book_modal.html' %}
+        {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+{% endblock %}

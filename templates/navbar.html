@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <div class="navbar-brand">
+            <img src="{{url_for('static', filename='logo.png')}}" alt="logo.png" width="100" height="120" class="d-inline-block me-5">
+            <span class="h1">The Book Cabin: wishlist for books</span>
+        </div>
+        <div class="navbar-nav nav-item">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Include the insert_modal from the separate file -->
+{% include 'insert_book_modal.html' %}

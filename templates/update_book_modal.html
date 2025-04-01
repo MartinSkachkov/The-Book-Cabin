@@ -1,0 +1,43 @@
+<!-- Modal for updating the book -->
+<div id="modaledit{{book.id}}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Update Book</h4>
+            </div>
+            <div class="modal-body">
+
+                <form action="{{url_for('book_bp.update_book')}}" method="POST">
+
+                    <div class="form-group">
+                        <label>Title:</label>
+                        <input type="hidden" name="id" value="{{book.id}}">
+                        <input type="text" class="form-control" name="title" value="{{book.title}}" required="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Author:</label>
+                        <input type="text" class="form-control" name="author" value="{{book.author}}" required="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price:</label>
+                        <input type="number" step="0.01" class="form-control" name="price" value="{{book.price}}"
+                               required="1">
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary mt-4" type="submit">Update Book</button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
