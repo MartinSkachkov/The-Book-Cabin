@@ -106,3 +106,94 @@
 
 ---
 
+## 4. Създаване на NAT Gateway
+
+### Защо:
+
+NAT Gateway позволява на ресурсите в частни подмрежи да осъществяват изходящи връзки към интернет (например за изтегляне
+на актуализации), без да бъдат достъпни от интернет.
+
+### Как:
+
+- Създадохме **Elastic IP** и го асоциирахме с **NAT Gateway** в **Public Subnet**.
+- Свързахме **Private Subnets** с NAT Gateway чрез **Private Route Table**.
+
+---
+
+## 5. Създаване на Route Tables
+
+### Защо:
+
+Маршрутните таблици определят как трафикът се движи в мрежата между подмрежи и интернет.
+
+### Как:
+
+- **Public Route Table:** Свързахме с **Public Subnets** и добавихме маршрут към **Internet Gateway** (0.0.0.0/0 → IGW).
+- **Private Route Table:** Свързахме с **Private Subnets** и добавихме маршрут към **NAT Gateway** (0.0.0.0/0 → NAT
+  Gateway). Това гарантира, че трафикът от частните подмрежи ще минава през NAT Gateway за достъп до интернет.
+
+---
+
+## 6. Създаване на Security Groups
+
+### Защо:
+
+Security Groups действат като виртуални фаерволи, които контролират достъпа до ресурсите (например EC2 инстанции, RDS и
+Load Balancer).
+
+### Как:
+
+#### Security Group за EC2 инстанции:
+
+- **Inbound Rules:**
+    - **HTTP (80):** Разрешено от **Application Load Balancer**.
+    - **HTTPS (443):** Разрешено от **Application Load Balancer**.
+    - **SSH (22):** Разрешено само от определен **IP адрес** (локален компютър).
+
+#### Security Group за Application Load Balancer:
+
+- **Inbound Rules:**
+    - **HTTP (80):** Разрешено от **всякъде** (0.0.0.0/0).
+    - **HTTPS (443):** Разрешено от **всякъде** (0.0.0.0/0).
+
+#### Security Group за RDS (MySQL):
+
+- **Inbound Rules:**
+    - **MySQL (3306):** Разрешено само от **Security Group-а на EC2** (за да се осигури достъп само от EC2 инстанции).
+
+### Outbound Rules:
+
+- Всички **outbound правила** са разрешени за тези ресурси (по подразбиране), освен ако не се конфигурират специфични
+  правила.
+
+---
+
+## 7. Създаване на RDS MySQL Database
+
+### Защо:
+
+RDS предлага управлявана база данни, която е по-лесна за поддръжка и мащабиране.
+
+### Как:
+
+- **DB Instance Identifier:** flask-db
+- **Master Username:** admin
+- **Master Password:** [сигурна парола]
+- **DB Instance Class:** db.t2.micro (Free Tier eligible)
+- **Storage:** 20GB (минимум за Free Tier)
+- **VPC:** Избрано съществуващото VPC.
+- **Subnet Group:** Избрана групата с **Private Subnets**.
+- **Public Access:** No (RDS ще бъде достъпна само вътре в VPC).
+- **Security Group:** Избрана **Security Group за RDS** (същата, която е конфигурирана за достъп от EC2).
+- **Database Name:** flask_app_db
+
+---
+
+## Заключение
+
+Това е настройката на **VPC**, **subnets**, **Internet Gateway**, **NAT Gateway**, **Route Tables**, **Security Groups**
+и **RDS MySQL база данни**, използвана за стартиране на Flask приложение в AWS.
+
+Ние създадохме **частни и публични подмрежи**, свързахме ги с **Internet Gateway** и **NAT Gateway**, и настроихме
+правилата за достъп чрез **Security Groups**. Осигурихме достъп до база данни чрез **RDS** и конфигурирахме правилата за
+достъп между EC2 и RDS.
